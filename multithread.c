@@ -8,6 +8,7 @@
 #include <utilz.h>
 #include <unistd.h>
 #include <sys/syscall.h>
+#include <unistd.h>
 
 #ifndef SYS_gettid
 #error "SYS_gettid unavailable on this system"
@@ -36,9 +37,17 @@ void* myThreadFun(void *vargp)
     static int j = 0;
     for (int i = 0; i < LOOPCOUNT;i++)
     {
-        fprintf(f,"%s",(char*)vargp);
+        fprintf(f, "%s", (char*)vargp);
+        //fputs(( char*)vargp), f);
+        if (i % 20 == 0)
+        {
+            fclose(f);
+            sleep(2);
+            f = fopen(MYFILE,"a");
+        }
 
     }
+    
     myThreads[j++].thread_id = tid;
 
     int err = fclose(f);
@@ -52,7 +61,7 @@ int main()
     utilzTest();
 
     //pthread_t thread_id; 
-    printf("Before Threads\n"); 
+    printf("Before Threads\n %s removed\n\n",MYFILE); 
    
 
     remove(MYFILE);

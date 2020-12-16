@@ -9,6 +9,7 @@
 
 #define MYFILE ("./mytextfile")
 #define LOOPCOUNT (100)
-#define NUMTHREADS (3)
+#define NUMTHREADS (5)
 
+#define MAXBUF (8192)
 #endif

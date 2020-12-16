@@ -4,7 +4,7 @@
 EXECUTABLE=concur
 LIBDIR=${HOME}/libs
 COMMONDIR=${HOME}/g/utilz_c
-COMMONFLAGS= -Wall -Werror
+COMMONFLAGS= -Wall  -g -ggdb
 all:  app
 
 app:

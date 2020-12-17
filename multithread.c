@@ -69,7 +69,7 @@ void* myThreadFun(void*);
 // when its name is specified in pthread_create() 
 void* myThreadFun(void *vargp) 
 { 
-
+    int ret = NOERROR;
     // get start of shm
     char* threadStr = (char*)((tType*)vargp)->shm;
     fcheck(threadStr == 0, MYTRUE,"shm addr error ",__FILE__,__LINE__);
@@ -81,11 +81,10 @@ void* myThreadFun(void *vargp)
 
     sem_t* sem= ((sem_t*)((tType*)vargp)->sem );
 
-    printf("sem %p",sem);
-
     if( ((int)((tType*)vargp)->usesem) == MYTRUE ) 
     {
-        sem_wait(sem); 
+        ret = sem_wait(sem); 
+        fcheck(ret != NOERROR, MYTRUE, "sem wait error ",__FILE__,__LINE__);
     }
 
     // do all writes for this thread.
@@ -102,7 +101,8 @@ void* myThreadFun(void *vargp)
     
     if( ((int)((tType*)vargp)->usesem) == MYTRUE ) 
     {
-        sem_post(sem); 
+        ret = sem_post(sem); 
+        fcheck(ret != NOERROR, MYTRUE, "sem post error ",__FILE__,__LINE__);
     }
 
     pthread_exit(NULL);
@@ -122,9 +122,6 @@ int main( int argc, char *argv[] )
     }
     int ret = sem_init(&sem, 1, 1);
     fcheck(ret  != NOERROR, MYTRUE," sem_init error ",__FILE__,__LINE__);
-
-    printf("sem main %p",&sem);
-
 
     // check that buf is big enough; all strings must be same len.
     printf(" size of shmbuf %d  needed size %ld\n",MAXBUF, LOOPCOUNT*NUMTHREADS*strlen(myThreads[0].argv_string));
